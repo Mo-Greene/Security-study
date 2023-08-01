@@ -1,13 +1,21 @@
 package com.mogreene.security.config;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
 @EnableWebSecurity  //security 필터가 스프링 필터체인에 등록
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    //해당 메서드의 리턴되는 오브젝트를 ioc로 등록하여 어디서든 사용가능
+    @Bean
+    public BCryptPasswordEncoder encodePwd() {
+        return new BCryptPasswordEncoder();
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -23,6 +31,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                 //login 페이지로 접속
-                .formLogin().loginPage("/login");
+                .formLogin().loginPage("/loginForm");
     }
 }

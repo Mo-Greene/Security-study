@@ -1,11 +1,20 @@
 package com.mogreene.security.controller;
 
+import com.mogreene.security.dto.UserDTO;
+import com.mogreene.security.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
+@RequiredArgsConstructor
 public class IndexController {
+
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @GetMapping("")
     public String index() {
@@ -27,13 +36,35 @@ public class IndexController {
         return "manager";
     }
 
-    @GetMapping("/join")
-    public @ResponseBody String join() {
-        return "join";
+    @GetMapping("/loginForm")
+    public String loginForm() {
+        return "loginForm";
     }
 
-    @GetMapping("/joinProc")
-    public @ResponseBody String joinProc() {
-        return "회원가입 완료!";
+    /**
+     * 회원가입 페이지
+     * @return
+     */
+    @GetMapping("/joinForm")
+    public String joinForm() {
+        return "joinForm";
+    }
+
+    /**
+     * 회원가입 > 등록
+     * @param userDTO
+     * @return
+     */
+    @PostMapping("/join")
+    public String join(UserDTO userDTO) {
+
+        userDTO.setRole("ROLE_USER");
+        String rawPassword = userDTO.getPassword();
+        String encPassword = bCryptPasswordEncoder.encode(rawPassword);
+        userDTO.setPassword(encPassword);
+
+        userRepository.insertUser(userDTO);
+
+        return "redirect:/loginForm";
     }
 }

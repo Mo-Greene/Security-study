@@ -2,6 +2,7 @@ package com.mogreene.security.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -9,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
 @EnableWebSecurity  //security 필터가 스프링 필터체인에 등록
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true) //@Secured 어노테이션 활성화, @PreAuthorize 활성화
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     //해당 메서드의 리턴되는 오브젝트를 ioc로 등록하여 어디서든 사용가능
@@ -30,7 +32,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().permitAll()
 
                 .and()
+                //login security
                 //login 페이지로 접속
-                .formLogin().loginPage("/loginForm");
+                .formLogin().loginPage("/loginForm")
+                .loginProcessingUrl("/login")  // /login 주소가 호출이 되면 시큐리티가 대신 로그인을 진행해줌
+                //로그인 전 url이 있다면 그 url로 감
+                .defaultSuccessUrl("/");
     }
 }

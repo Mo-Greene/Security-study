@@ -7,16 +7,30 @@ package com.mogreene.security.config.auth;
 //User 오브젝트 타입 => UserDetails 타입 객체
 
 import com.mogreene.security.dto.UserDTO;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
 //SecuritySession안에 => Authentication => UserDetails 타입(PrincipalDetails)
-public class PrincipalDetails implements UserDetails {
+@Getter
+public class PrincipalDetails implements UserDetails, OAuth2User {
 
     private final UserDTO userDTO;
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return null;
+    }
 
     public PrincipalDetails(UserDTO userDTO) {
         this.userDTO = userDTO;
